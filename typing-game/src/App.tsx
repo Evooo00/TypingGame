@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-
+import React, { useState, useEffect } from "react";
+import supabase from "./config/supabaseClient";
 import "./App.css";
 
 function App() {
@@ -9,6 +9,36 @@ function App() {
   const [game, setGame] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
 
+  interface WordWithCode {
+    id: any;
+    created_at: any;
+    code: any;
+  }
+
+  const [fetchError, setFetchError] = useState<string | null>(null);
+  const [wordsWithCode, setWordsWithCode] = useState<WordWithCode[] | null>(
+    null,
+  );
+
+  useEffect(() => {
+    const fetchWordsWithCode = async () => {
+      const { data, error } = await supabase.from("wordsOfCode").select();
+
+      if (error) {
+        setFetchError("Could not fetch data");
+        setWordsWithCode(null);
+        console.log(error);
+      }
+
+      if (data) {
+        setFetchError(null);
+        setWordsWithCode(data);
+        console.log(wordsWithCode);
+      }
+    };
+
+    fetchWordsWithCode();
+  }, []);
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     //console.log(e.target.value);
     setInput(e.target.value);
@@ -16,6 +46,7 @@ function App() {
 
   const handleGameStart = (e: any) => {
     console.log(game);
+    console.log(supabase);
     setGame(true);
 
     if (currentIndex >= wordsOfCode.length) {
