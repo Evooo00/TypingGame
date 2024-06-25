@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import supabase from "./config/supabaseClient";
 function Register() {
   const [formData, setFormData] = useState({
     login: "",
@@ -15,6 +15,25 @@ function Register() {
       };
     });
   };
+
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.password,
+        options: {
+          data: {
+            name: formData.login,
+          },
+        },
+      });
+      alert("Check your email");
+    } catch (error) {
+      alert(error);
+    }
+  };
+
   return (
     <div className="container mx-auto p-0 flex  items-center flex-col h-screen w-screen">
       <form className="flex flex-col items-center">
@@ -44,6 +63,7 @@ function Register() {
           <button
             className="p-2 bg-strongYellow w-24 rounded-2xl text-darkGray font-bold"
             type="submit"
+            onClick={handleSubmit}
           >
             Register
           </button>

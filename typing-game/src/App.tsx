@@ -1,11 +1,9 @@
-import React, { useState, useEffect } from "react";
-import supabase from "./config/supabaseClient";
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Game from "./game";
 import Login from "./login";
 import Register from "./register";
-import useTimer from "./timer";
+
 function App() {
   return (
     <Router>
@@ -20,9 +18,10 @@ function App() {
             </a>
             <a href="./register">
               <button className="border-2 rounded-2xl w-16 mx-2">
-                Sign in
+                Sign up
               </button>
             </a>
+            <button>asdasd</button>
           </div>
         </header>
         <Routes>
