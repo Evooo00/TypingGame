@@ -13,7 +13,15 @@ const useTimer = (initialState: number = 0) => {
     setIsRunning(true);
   };
 
-  return { elapsedTime, isRunning, handleStart };
+  const handleStop = () => {
+    if (countRef.current) {
+      clearInterval(countRef.current);
+      countRef.current = null;
+    }
+    setIsRunning(false);
+  };
+
+  return { elapsedTime, isRunning, handleStart, handleStop, setElapsedTime };
 };
 
 export default useTimer;

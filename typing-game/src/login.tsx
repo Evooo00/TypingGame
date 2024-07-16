@@ -1,6 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, FC } from "react";
 import supabase from "./config/supabaseClient";
-function Login() {
+import { useNavigate } from "react-router-dom";
+
+interface Props {
+  setToken?: any;
+}
+const Login: FC<Props> = ({ setToken }) => {
+  let navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -24,6 +30,9 @@ function Login() {
         password: formData.password,
       });
       console.log(data);
+      setToken(data);
+
+      navigate("/");
 
       if (error) throw error;
     } catch (error) {
@@ -60,7 +69,7 @@ function Login() {
         </a>
 
         <p className="text-xs p-2 text-lightGray">
-          New to Smartcat?{" "}
+          New to TypingGame?{" "}
           <a href="./register" className="underline">
             Create a free account
           </a>
@@ -68,6 +77,6 @@ function Login() {
       </form>
     </div>
   );
-}
+};
 
 export default Login;

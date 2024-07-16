@@ -8,7 +8,8 @@ const Game = () => {
   const [wordsFromBase, setWordsFromBase] = useState<string[]>([]);
   const [fetchError, setFetchError] = useState<string | null>(null);
 
-  const { elapsedTime, isRunning, handleStart } = useTimer();
+  const { elapsedTime, setElapsedTime, isRunning, handleStart, handleStop } =
+    useTimer();
 
   useEffect(() => {
     const fetchWordsWithCode = async () => {
@@ -38,7 +39,16 @@ const Game = () => {
     setInput(e.target.value);
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
+  const addRowToTable = async (record: { writeTime: any }) => {
+    const { data, error } = await supabase.from("Ranking").insert([record]);
+    if (error) {
+      console.log("Error inserting row:", error);
+    } else {
+      console.log("Row inserted:", data);
+    }
+  };
+
+  const handleKeyDown = async (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
       if (input === wordsFromBase[currentIndex]) {
         setInput("");
@@ -46,13 +56,15 @@ const Game = () => {
       }
       if (currentIndex >= wordsFromBase.length - 1) {
         setGame(false);
+        handleStop();
+        const gameTime: any = elapsedTime / 1000;
+        console.log(gameTime);
+        await addRowToTable({ writeTime: gameTime });
+        setElapsedTime(0);
       }
     }
   };
 
-  const handleGameStart = () => {
-    startGame();
-  };
   return (
     <div className=" container mx-auto p-0 flex  items-center flex-col h-screen w-screen">
       <div className="shadow-xl bg-white h-28 w-1/2 flex justify-center items-center rounded-md ">
@@ -70,7 +82,7 @@ const Game = () => {
         disabled={!game}
       />
       <button
-        onClick={handleGameStart}
+        onClick={startGame}
         disabled={game}
         className="border-2 w-24 h-12 my-2 rounded-2xl bg-green-400 hover:bg-green-600 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 "
       >
