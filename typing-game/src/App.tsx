@@ -38,7 +38,7 @@ function App() {
         <header className="bg-darkGray text-white h-16 w-screen mb-16 text-center flex p-2 items-center justify-between">
           <p className="">
             <a href="/">Typing Game!</a>
-            {token ? <p>Player: {token.user.email}</p> : ""}
+            {token ? <p>Player: {token.user.user_metadata.name}</p> : ""}
           </p>
           <div>
             {!token ? (
@@ -55,19 +55,26 @@ function App() {
                 </a>{" "}
               </>
             ) : (
-              <a href="/home">
-                <button
-                  className="border-2 rounded-2xl w-20 mx-2 p-1 hover:border-strongYellow hover:bg-strongYellow hover:text-darkGray font-semibold"
-                  onClick={handleLogout}
-                >
-                  Logout
-                </button>
-              </a>
+              <>
+                <a href="/ranking">
+                  <button className="border-2 rounded-2xl w-20 mx-2 p-1 hover:border-strongYellow hover:bg-strongYellow hover:text-darkGray font-semibold">
+                    Ranking
+                  </button>
+                </a>
+                <a href="/home">
+                  <button
+                    className="border-2 rounded-2xl w-20 mx-2 p-1 hover:border-strongYellow hover:bg-strongYellow hover:text-darkGray font-semibold"
+                    onClick={handleLogout}
+                  >
+                    Logout
+                  </button>
+                </a>
+              </>
             )}
           </div>
         </header>
         <Routes>
-          <Route path="/" element={<Game />}></Route>
+          <Route path="/" element={<Game token={token} />}></Route>
           <Route path="/login" element={<Login setToken={setToken} />}></Route>
           <Route path="/register" element={<Register />}></Route>
           <Route path="/ranking" element={<Ranking />}></Route>

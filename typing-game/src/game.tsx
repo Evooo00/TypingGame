@@ -1,13 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, FC } from "react";
 import supabase from "./config/supabaseClient";
 import useTimer from "./timer";
-const Game = () => {
+
+interface Props {
+  token?: any;
+}
+const Game: FC<Props> = ({ token }) => {
   const [input, setInput] = useState("");
   const [game, setGame] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [wordsFromBase, setWordsFromBase] = useState<string[]>([]);
   const [fetchError, setFetchError] = useState<string | null>(null);
-
   const { elapsedTime, setElapsedTime, isRunning, handleStart, handleStop } =
     useTimer();
 
@@ -39,7 +42,7 @@ const Game = () => {
     setInput(e.target.value);
   };
 
-  const addRowToTable = async (record: { writeTime: any }) => {
+  const addRowToTable = async (record: { writeTime: any; name: any }) => {
     const { data, error } = await supabase.from("Ranking").insert([record]);
     if (error) {
       console.log("Error inserting row:", error);
@@ -47,7 +50,7 @@ const Game = () => {
       console.log("Row inserted:", data);
     }
   };
-
+  //token.user.user_metadata.name
   const handleKeyDown = async (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
       if (input === wordsFromBase[currentIndex]) {
@@ -59,7 +62,10 @@ const Game = () => {
         handleStop();
         const gameTime: any = elapsedTime / 1000;
         console.log(gameTime);
-        await addRowToTable({ writeTime: gameTime });
+        await addRowToTable({
+          writeTime: gameTime,
+          name: token.user.user_metadata.name,
+        });
         setElapsedTime(0);
       }
     }
