@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import supabase from "./config/supabaseClient";
 
 function Ranking() {
-  const [rankingData, setRankingData] = useState<any>("");
+  const [rankingData, setRankingData] = useState<any>([]);
   const fetchRankingData = async () => {
     const { data, error } = await supabase.from("Ranking").select();
 
@@ -18,7 +18,7 @@ function Ranking() {
   useEffect(() => {
     const getData = async () => {
       const data = await fetchRankingData();
-      setRankingData(data);
+      setRankingData(data || []);
     };
     getData();
   }, []);
@@ -27,7 +27,7 @@ function Ranking() {
       <ul>
         {rankingData.map((record: any, index: any) => (
           <li key={index}>
-            {record.name} {record.writeTime} {index}
+            {record.name} {record.writeTime}
           </li>
         ))}
       </ul>
